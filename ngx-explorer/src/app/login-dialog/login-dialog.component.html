@@ -1,0 +1,22 @@
+<!-- login-dialog.component.html -->
+<h1 mat-dialog-title>Login</h1>
+<div mat-dialog-content>
+    <form>
+        <mat-form-field>
+            <input matInput placeholder="Username" [(ngModel)]="usernameLogin"  [ngModelOptions]="{standalone: true}" required="">
+        </mat-form-field>
+        <br>
+        <mat-form-field>
+            <input matInput type="password" placeholder="Password" [(ngModel)]="passwordLogin"  [ngModelOptions]="{standalone: true}" required="">
+        </mat-form-field>
+        <mat-error *ngIf="errorLogin">{{ errorLogin }}</mat-error>
+    </form>
+</div>
+<div mat-dialog-actions align="center">
+    <button mat-button (click)="login()">Login</button>
+    &nbsp;
+    &nbsp;
+    &nbsp;
+    &nbsp;
+    <button mat-button (click)="openRegisterDialog()">Register</button>
+</div>

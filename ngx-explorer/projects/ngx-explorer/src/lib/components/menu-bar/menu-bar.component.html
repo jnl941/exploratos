@@ -1,0 +1,35 @@
+<div class="nxe-menu-bar">
+    <div class="nxe-menu-bar-left">
+        @if (featCreateDir) {
+            <button class="nxe-menu-bar-button" (click)="createDir()"><i class="nxe-folder" aria-hidden="true"></i>New Folder</button>
+        }
+
+        <button class="nxe-menu-bar-button" (click)="refresh()"><i class="nxe-arrows-cw" aria-hidden="true"></i> Refresh</button>
+
+        @if (featUpload) {
+            <button class="nxe-menu-bar-button" (click)="openUploader()"><i class="nxe-upload" aria-hidden="true"></i> Upload</button>
+        }
+
+        @if (featDownload) {
+            <button class="nxe-menu-bar-button" [disabled]="!(canDownload$ | async)" (click)="download()">
+                <i class="nxe-download" aria-hidden="true"></i> Download
+            </button>
+        }
+
+        @if (featRename) {
+            <button class="nxe-menu-bar-button" [disabled]="!(canRename$ | async)" (click)="rename()">
+                <i class="nxe-edit" aria-hidden="true"></i> Rename
+            </button>
+        }
+
+        @if (featDelete) {
+            <button class="nxe-menu-bar-button" [disabled]="!(canDelete$ | async)" (click)="remove()">
+                <i class="nxe-trash-empty" aria-hidden="true"></i> Delete
+            </button>
+        }
+    </div>
+    <div class="nxe-menu-bar-right">
+        <nxe-view-switcher></nxe-view-switcher>
+    </div>
+    <input style="display: none" type="file" multiple (change)="handleFiles($event)" #uploader />
+</div>

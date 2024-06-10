@@ -1,0 +1,15 @@
+<div class="demo-main">
+    <div class="header">
+        <div>Opened directoy name: {{ openedDir$ | async }}</div>
+        <div>Selection length: {{ selectionLength$ | async }}</div>
+        <div>Root children length: {{ rootLen$ | async }}</div>
+    </div>
+    <div class="demo-container">
+        <div class="inner">
+            <nxe-explorer></nxe-explorer>
+        </div>
+        <!-- <nxe-content></nxe-content> -->
+        <!-- <nxe-tree></nxe-tree> -->
+    </div>
+</div>
+<!-- <app-file-display></app-file-display> -->

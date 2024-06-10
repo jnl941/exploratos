@@ -1,0 +1,7 @@
+FROM node:lts-alpine3.19
+WORKDIR /app
+COPY . .
+RUN npm install --force
+COPY ./node_modules/ngx-explorer /app/node_modules/ngx-explorer
+EXPOSE 4200
+CMD ["npm", "start"]

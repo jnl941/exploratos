@@ -1,0 +1,11 @@
+<div class="nxe-content">
+    <div class="nxe-content-top">
+        <nxe-menu-bar></nxe-menu-bar>
+    </div>
+    <div class="nxe-content-top">
+        <nxe-breadcrumbs></nxe-breadcrumbs>
+    </div>
+    <div class="nxe-content-middle">
+        <ng-container *ngComponentOutlet="viewComponent$ | async"></ng-container>
+    </div>
+</div>

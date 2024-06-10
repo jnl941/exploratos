@@ -1,0 +1,27 @@
+<h1 mat-dialog-title>File Content</h1>
+<div class="dialog-content">
+    <div class="content">
+        <pre> {{ data.content }}</pre>
+    </div>
+    <hr>
+    <div class="commentary">
+        <h2>&nbsp;&nbsp;Commentary List</h2>
+        <!-- Commentary List -->
+        <ul>
+            <li *ngFor="let comment of comments"><b>{{comment.username}}:</b> {{ comment.text }} </li>
+        </ul>
+        <!-- Add a form for users to input their comment -->
+        <form (ngSubmit)="postComment()" #commentForm="ngForm">
+            <mat-form-field appearance="fill">
+                <mat-label>Add your comment</mat-label>
+                <textarea  matInput name="comment" [(ngModel)]="newComment" required></textarea>
+                <mat-error *ngIf="commentForm.controls['comment'].invalid">Comment is required</mat-error>
+            </mat-form-field>
+            <br>
+            <button mat-raised-button color="primary" type="submit" [disabled]="commentForm.invalid">Post</button>
+        </form>        
+    </div>
+</div>
+<mat-dialog-actions align="end">
+    <button mat-button [mat-dialog-close]>Close</button>
+</mat-dialog-actions>

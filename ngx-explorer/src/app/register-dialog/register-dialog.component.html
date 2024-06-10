@@ -1,0 +1,18 @@
+<!-- register-dialog.component.html -->
+<h1 mat-dialog-title>Register</h1>
+<div mat-dialog-content>
+    <form>
+        <mat-form-field>
+            <input matInput placeholder="Username" [(ngModel)]="usernameRegister" [ngModelOptions]="{standalone: true}" required>
+        </mat-form-field>
+        <br>
+        <mat-form-field>
+            <input matInput type="password" placeholder="Password" [(ngModel)]="passwordRegister" [ngModelOptions]="{standalone: true}" required>
+        </mat-form-field>
+        <mat-error *ngIf="errorRegister">{{ errorRegister }}</mat-error>
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="register()">&nbsp;Register</button>
+    <button mat-button (click)="openLoginDialog()"> Cancel</button>
+</div>

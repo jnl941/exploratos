@@ -1,0 +1,68 @@
+@import '../vars.scss';
+
+$item-spacing: 10px;
+
+.nxe-tree {
+    position: relative;
+    height: 100%;
+    & > .nxe-tree-ul {
+        margin-left: 0 !important;
+    }
+    overflow-y: scroll;
+    user-select: none;
+}
+
+.nxe-tree-ul {
+    list-style-position: inside;
+    padding: 0;
+    margin: 0;
+    margin-left: 20px;
+    position: relative;
+    height: 100%;
+
+    li {
+        list-style-type: none;
+        position: relative;
+        padding: 0;
+
+        .item {
+            display: flex;
+            cursor: pointer;
+            padding: 3px 2px;
+            align-items: center;
+
+            .chevron {
+                text-align: center;
+                color: #333;
+                width: 21px;
+                top: 1px;
+                font-size: 1.3rem;
+            }
+
+            .dir-icon {
+                margin-right: 5px;
+
+                i {
+                    color: #555;
+                    font-weight: 500;
+
+                    &.nxe-folder {
+                        color: $folder-bg;
+                    }
+                }
+            }
+
+            .dir-name {
+                flex: 1;
+            }
+
+            &:hover {
+                background-color: #d7edff;
+            }
+
+            &.selected {
+                background-color: #c5e1ff;
+            }
+        }
+    }
+}

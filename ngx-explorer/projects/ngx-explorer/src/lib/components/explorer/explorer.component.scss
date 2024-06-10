@@ -1,0 +1,14 @@
+.nxe-explorer {
+    display: flex;
+    flex-flow: row;
+    height: 100%;
+
+    .nxe-explorer-left {
+        width: 20%;
+        border-right: 1px solid #ccc;
+    }
+
+    .nxe-explorer-right {
+        flex-grow: 1;
+    }
+}

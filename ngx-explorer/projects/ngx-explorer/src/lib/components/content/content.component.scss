@@ -1,0 +1,16 @@
+.nxe-content {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+
+    .nxe-content-top {
+        border-bottom: 1px solid #ccc;
+    }
+
+    .nxe-content-middle {
+        display: block;
+        position: relative;
+        flex: 1 1 auto;
+        border-bottom: 1px solid #ccc;
+    }
+}

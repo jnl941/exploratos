@@ -1,0 +1,53 @@
+{
+  "name": "explorer-app",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve --host 0.0.0.0",
+    "build:lib": "ng build ngx-explorer && npm run copy",
+    "build:watch": "ng build ngx-explorer --watch",
+    "build": "ng build",
+    "build:gh": "ng build --base-href=/ngx-explorer/",
+    "pack": "rm -rf dist && ng build ngx-explorer && npm run copy && cd dist/ngx-explorer && npm pack",
+    "copy": "cp README.md dist/ngx-explorer/",
+    "test": "ng test",
+    "prettier": "prettier --write .",
+    "lint": "eslint . --ext .ts --fix",
+    "semantic-release": "semantic-release"
+  },
+  "private": false,
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@angular/animations": "^17.0.0",
+    "@angular/common": "^17.0.0",
+    "@angular/compiler": "^17.0.0",
+    "@angular/core": "^17.0.0",
+    "@angular/material": "^18.0.2",
+    "@angular/platform-browser": "^17.3.11",
+    "@angular/platform-browser-dynamic": "^17.0.0",
+    "@angular/router": "^17.0.0",
+    "@material/dialog": "^14.0.0",
+    "ngx-explorer": "^5.0.1",
+    "rxjs": "~7.8.0",
+    "ts-md5": "^1.3.1",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.14.2"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^17.0.6",
+    "@angular/cli": "^17.0.6",
+    "@angular/compiler-cli": "^17.0.0",
+    "@types/jasmine": "~5.1.0",
+    "eslint": "^8.56.0",
+    "jasmine-core": "~5.1.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "ng-packagr": "^17.2.0",
+    "prettier": "^3.0.3",
+    "typescript": "~5.2.2",
+    "typescript-eslint": "^7.0.2"
+  }
+}

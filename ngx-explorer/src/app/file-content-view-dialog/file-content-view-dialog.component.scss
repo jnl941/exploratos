@@ -1,0 +1,46 @@
+.dialog-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0px;
+    column-count: 2;
+    margin: 10%;
+  
+    .content, .commentary {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+  
+    .commentary {
+      display: flex;
+      flex-direction: column;
+      textarea {
+          width: 100%;
+          padding-left: 10%;
+          padding-right: 10%;
+      }
+      h2 {
+        margin-top: 0;
+      }
+  
+      ul {
+        flex-grow: 1;
+        overflow-y: auto;
+        max-height: 300px;
+      }
+  
+      form {
+        display: flex;
+        flex-direction: column;
+        
+        mat-form-field {
+          width: 100%;
+        }
+  
+        button {
+          align-self: flex-end;
+          margin-top: 10px;
+        }
+      }
+    }
+  }
+  
