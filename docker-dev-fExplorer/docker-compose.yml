@@ -1,0 +1,39 @@
+services:
+  postgres:
+   image: postgres:latest
+   container_name: postgres-fExplorer
+   ports:
+     - "5432:5432"
+   environment:
+     POSTGRES_DB: db
+     POSTGRES_USER: user
+     POSTGRES_PASSWORD: pass
+   volumes:
+     - ./data:/var/lib/postgresql/data
+   networks:
+     - app-network
+  springboot:
+   build: ../file-fetcher-spring
+   container_name: springboot-fExplorer
+   volumes:
+     - ../file-fetcher-spring:/app
+   ports:
+     - "8080:8080"
+   networks:
+     - app-network
+   depends_on:
+     - postgres
+  angular:
+    build: 
+      context: ../ngx-explorer
+      dockerfile: ../ngx-explorer/Dockerfile.dev
+    volumes:
+     - ../ngx-explorer:/app
+     - ../ngx-explorer/node_modules/ngx-explorer:/app/node_modules/ngx-explorer
+    ports:
+     - "4200:4200"
+    networks:
+     - app-network
+networks:
+  app-network:
+    driver: bridge

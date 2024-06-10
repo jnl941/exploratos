@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  postgres:
+   image: postgres:latest
+   container_name: postgres
+   ports:
+     - "5432:5432"
+   environment:
+     POSTGRES_DB: db
+     POSTGRES_USER: user
+     POSTGRES_PASSWORD: pass
+   volumes:
+     - ./data:/var/lib/postgresql/data
+   networks:
+     - app-network
+  springboot:
+   build: ../BD_WeekMeal/weekmeal_sb
+   container_name: springboot
+   volumes:
+     - ../BD_WeekMeal/weekmeal_sb:/app
+   ports:
+     - "8080:8080"
+   networks:
+     - app-network
+   depends_on:
+     - postgres
+  angular:
+    build: ../angular
+    container_name: angular
+    ports:
+     - "4200:80"
+    networks:
+     - app-network
+networks:
+  app-network:
+    driver: bridge
