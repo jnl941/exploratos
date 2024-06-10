@@ -13,7 +13,6 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
 import com.example.fileFetcher.dto.ArticleDto;
-import com.example.fileFetcher.dto.WikiDto;
 
 @Component("articlesDataService")
 

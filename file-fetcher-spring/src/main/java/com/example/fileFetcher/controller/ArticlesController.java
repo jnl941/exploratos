@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.fileFetcher.dto.ArticleDto;
-import com.example.fileFetcher.dto.WikiDto;
-import com.example.fileFetcher.services.WikiService;
+import com.example.fileFetcher.services.ArticlesService;
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 
@@ -26,7 +25,7 @@ import com.google.gson.JsonIOException;
 public class ArticlesController {
 
     @Autowired
-    private WikiService wikiService;
+    private ArticlesService articlesService;
 
         private Gson gson = new Gson();
 
@@ -34,7 +33,7 @@ public class ArticlesController {
     @GetMapping("/githubArticles")
     
     public ResponseEntity<List<ArticleDto>> getVegetarianismoData() {
-        List<ArticleDto> result = wikiService.retrieveGithubArticles();
+        List<ArticleDto> result = articlesService.retrieveGithubArticles();
         try {
             
             gson.toJson(result, new FileWriter("dataArticles"));
