@@ -2,7 +2,7 @@ import { AsyncPipe } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { ContentComponent, ExplorerComponent, ExplorerService, TreeComponent } from 'ngx-explorer';
 import { map } from 'rxjs';
-import { HttpClientModule } from '@angular/common/http';
+import {} from '@angular/common/http';
 import { FileFetcherService } from './file-fetcher.service';
 import { FileDisplayComponent } from './file-display/file-display.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,7 +17,11 @@ import { RegisterDialogComponent } from './register-dialog/register-dialog.compo
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
     standalone: true,
-    imports: [ExplorerComponent, ContentComponent, TreeComponent, AsyncPipe, HttpClientModule, FileDisplayComponent, MatButtonModule, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogModule, MatFormField],
+    imports: [ExplorerComponent, ContentComponent, TreeComponent, AsyncPipe, 
+// TODO: `HttpClientModule` should not be imported into a component directly.
+// Please refactor the code to add `provideHttpClient()` call to the provider list in the
+// application bootstrap logic and remove the `HttpClientModule` import from this component.
+HttpClientModule, FileDisplayComponent, MatButtonModule, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogModule, MatFormField],
     providers: [FileFetcherService]
 })
 export class AppComponent implements OnInit{

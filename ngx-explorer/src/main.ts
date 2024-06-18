@@ -4,7 +4,7 @@ import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { CONFIG, DataService, NgeExplorerConfig } from 'ngx-explorer';
 import { ExampleDataService } from './app/data.service';
-import { HttpClientModule } from '@angular/common/http';
+import {} from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { provideAnimations } from '@angular/platform-browser/animations'
 
