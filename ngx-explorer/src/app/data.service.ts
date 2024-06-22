@@ -84,6 +84,7 @@ export class ExampleDataService implements IDataService<MyExplorerEntity> {
         this.fileFetcherService.getFilesAndDirectories().subscribe((data: { files: MyExplorerEntity[]; directories: MyExplorerEntity[]; }) => {
             this.files = data.files;
             this.directories = [Saved_Node, ...data.directories];
+            return of(this.files, this.directories);
         });
     }
     runFile(target: MyExplorerEntity): Observable<MyExplorerEntity> {

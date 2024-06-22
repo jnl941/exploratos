@@ -12,6 +12,7 @@ src/app/token.ts
 
 # dependencies
 /node_modules
+!/node_modules/ngx-explorer/**
 
 # profiling files
 chrome-profiler-events*.json
