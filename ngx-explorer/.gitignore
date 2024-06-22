@@ -11,8 +11,8 @@ src/app/token.ts
 /bazel-out
 
 # dependencies
+!/node_modules/ngx-explorer
 /node_modules
-!/node_modules/ngx-explorer/**
 
 # profiling files
 chrome-profiler-events*.json
