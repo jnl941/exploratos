@@ -4,9 +4,10 @@ import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { CONFIG, DataService, NgeExplorerConfig } from 'ngx-explorer';
 import { ExampleDataService } from './app/data.service';
-import {} from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
-import { provideAnimations } from '@angular/platform-browser/animations'
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts'
 
 if (environment.production) {
     enableProdMode();
@@ -33,6 +34,6 @@ bootstrapApplication(AppComponent, {
                     createDir: false,
                 },
             } as NgeExplorerConfig,
-        },
+        }, provideCharts(withDefaultRegisterables()),
     ],
 });

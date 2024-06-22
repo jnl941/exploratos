@@ -2,7 +2,7 @@ import { AsyncPipe } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { ContentComponent, ExplorerComponent, ExplorerService, TreeComponent } from 'ngx-explorer';
 import { map } from 'rxjs';
-import {} from '@angular/common/http';
+import { HttpClientModule} from '@angular/common/http';
 import { FileFetcherService } from './file-fetcher.service';
 import { FileDisplayComponent } from './file-display/file-display.component';
 import { MatButtonModule } from '@angular/material/button';

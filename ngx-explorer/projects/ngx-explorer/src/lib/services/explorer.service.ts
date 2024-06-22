@@ -224,9 +224,9 @@ export class ExplorerService {
             throw new Error('Node not found');
         }
 
-        if (parent.isLeaf) {
-            throw new Error('Cannot open a file node');
-        }
+        //if (parent.isLeaf) {
+        //    throw new Error('Cannot open a file node');
+        //}
         
         console.log("BEFORE LEAFING")
         return this.dataService.getContent(parent.data).pipe(

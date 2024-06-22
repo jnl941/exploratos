@@ -13,6 +13,7 @@ import { FileContentViewDialogComponent } from './file-content-view-dialog/file-
 import { ApiService } from './api.service';
 import { ArticleScrapping } from './api.service';
 import { Md5 } from 'ts-md5';
+import { GraphViewDialogComponent } from './graph-view-dialog/graph-view-dialog.component';
 
 // Definición de la interfaz de la entidad para el explorador
 export interface MyExplorerEntity extends Data {
@@ -52,17 +53,6 @@ export interface MyExplorerEntity extends Data {
 // ] as MyExplorerEntity[];
 
 // Nodos predefinidos para GitHub, scrapping de artículos y carpeta guardada
-const Github_API_Node = {
-    id: 0,
-    name: "Github Search",
-    path: "/"
-} as MyExplorerEntity
-
-const Articles_Scrap_Node = {
-    id: 0,
-    name: "Articles",
-    path: "/"
-} as MyExplorerEntity
 
 const Saved_Node = {
     id: 0,
@@ -82,7 +72,7 @@ export class ExampleDataService implements IDataService<MyExplorerEntity> {
             // Obtener archivos y directorios
             this.fileFetcherService.getFilesAndDirectories().subscribe((data: { files: MyExplorerEntity[]; directories: MyExplorerEntity[]; }) => {
             this.files = data.files;
-            this.directories = [Github_API_Node, Articles_Scrap_Node, Saved_Node, ...data.directories];
+            this.directories = [Saved_Node, ...data.directories];
         });
     }
 
@@ -169,6 +159,20 @@ export class ExampleDataService implements IDataService<MyExplorerEntity> {
             map(() => ({ files: this.files, dirs: this.directories.filter(data => data.path == parent.path) }))
         );
     }
+
+    private openGraphViewDialog(parent: any): Observable<any> {
+        // Para archivos: Abrir la ventana para ver el contenido
+        const dialogRef = this.dialog.open(GraphViewDialogComponent, {
+            width: '80%',
+            height: '90%',
+            data: parent
+        });
+        
+        throw new Error("IGNORAR: Cortar proceso de getContents() del módulo base");
+        return dialogRef.afterClosed().pipe(
+            map(() => ({ files: this.files, dirs: this.directories.filter(data => data.path == parent.path) }))
+        );
+    }
       
     private handleUrlContent(parent: any): Observable<any> {
         // Para archivos: Abrir la ventana para ver el contenido, el contenido se coge con un GET automáticamente de la URL que tiene el archivo
@@ -191,79 +195,24 @@ export class ExampleDataService implements IDataService<MyExplorerEntity> {
             });
         });
     }
-      
+    
+
     getContent(data: MyExplorerEntity): Observable<any> {
         // Método que controla si se abre un archivo o una carpeta y qué tipo de carpeta se abre: Local, Falsa, De Scrapping u Online
-        if (data.path && data.path.startsWith("/Github Search/")) {
+        if (data.path && data.name.startsWith("pos-tracer")) {
             // Archivos/Carpetas online de la API de Github
-            if (data.content != ""){
-                if (data.content.startsWith('http')) {
-                    return this.handleUrlContent(data);
-                } else {
-                    return this.openFileContentViewDialog(data);
-                }
+            if (data.content.startsWith('http')) {
+                return this.handleUrlContent(data);
+            } else {
+                return this.openGraphViewDialog(data);
             }
-            
-            const repoName = data.path.replace("/Github Search/","");
-            const owner = data.owner;
-            console.log("In");
-            return this.githubService.getRepositoryContents(owner, repoName, data.subname).pipe(
-                map((contents: any[]) => {
-                    const files = contents.filter((item) => item.type === "file").map((file: any) => ({
-                        id: Md5.hashStr(file.sha, true)[0],
-                        name: file.name,
-                        subname: file.path,
-                        path: `/Github Search/${repoName}`,
-                        content: file.url,
-                        owner: owner
-                    }));
-                    const dirs = contents.filter((item) => item.type === "dir").map((dir: any) => ({
-                        id: dir.sha,
-                        name: dir.name,
-                        subname: dir.path,
-                        path: `/Github Search/${repoName}`,
-                        content: '',
-                        owner: owner
-                    }));
-                    return { files, dirs };
-                })
-            );
-        } else if (data.path && data.path.startsWith("/Articles/")) {
-            // Artículos a modo de archivos del Scrapping del blog de Github
-            return this.openFileContentViewDialog(data);
-        }  else if (data.path && data.path.startsWith("/Saved/")) {
+        } else if (data.path && data.path.startsWith("/Saved/")) {
             // Archivos locales comentados
-            return this.openFileContentViewDialog(data);
-        } else if(data.id != 0 && data.name != "Github Search" && data.name != "Articles"){
-            // Carpeta falsa "Github Search" para abrir la ventana despegable y buscar
-            if (this.files.find((file) => file.id === data.id)){
-                if (data.content.startsWith('http')) {
-                    return this.handleUrlContent(data);
-                } else {
-                    return this.openFileContentViewDialog(data);
-                }
+            if (data.content.startsWith('http')) {
+                return this.handleUrlContent(data);
+            } else {
+                return this.openFileContentViewDialog(data);
             }
-            const folderPath = data.path || '/';
-            const name = data.name ? data.name + '/' : '';
-            const fullPath = folderPath + name;
-            const dirs = this.directories.filter((f) => f.path === fullPath);
-            const files = this.files.filter((f) => f.path === fullPath);
-            return of({ files, dirs });
-        } else if(data.name == "Articles"){
-            // Carpeta falsa "Github Search" para abrir la ventana despegable y buscar
-            return this.apiService.getArticles().pipe(
-                map((contents: ArticleScrapping[]) => {
-                    const files = contents.map((article: ArticleScrapping) => ({
-                        id: Md5.hashStr(article.title, true)[0],
-                        name: article.title,
-                        subname: article.title,
-                        path: `/Articles/`,
-                        content: article.text,
-                        owner: "Github"
-                    }));
-                    return { files, dirs: [] };
-                })
-            );
         } else if(data.name == "Saved"){
             return new Observable((observer) => {
                 this.apiService.getCommentedFiles().subscribe((response) => {
@@ -280,33 +229,138 @@ export class ExampleDataService implements IDataService<MyExplorerEntity> {
                 });
             });
         } else {
-            const dialogRef = this.dialog.open(SearchDialogComponent);
-    
-            return dialogRef.afterClosed().pipe(
-                switchMap((result: string) => {
-                    if (result) {
-                        return this.githubService.searchRepositories(result).pipe(
-                            map((result: { items: any[] }) => {
-                                const repositories: MyExplorerEntity[] = result.items.map((repo: any) => ({
-                                    id: repo.id,
-                                    name: repo.name,
-                                    subname: '',
-                                    path: `/Github Search/${repo.name}`,
-                                    content: '', // Add the 'content' property with an empty string value,
-                                    owner: repo.owner.login
-                                }));
-                                
-                                return { files: [], dirs: repositories }; // Assign 'repositories' to 'dirs'
-                            })
-                        );
-                    } else {
-                        // If no result is provided, return an observable with empty files and dirs
-                        return of({ files: [], dirs: [] });
-                    }
-                })
-            );
+            if (this.files.find((file) => file.id === data.id)){
+                if (data.content.startsWith('http')) {
+                    return this.handleUrlContent(data);
+                } else {
+                    return this.openFileContentViewDialog(data);
+                }
+            }
+            const folderPath = data.path || '/';
+            const name = data.name ? data.name + '/' : '';
+            const fullPath = folderPath + name;
+            const dirs = this.directories.filter((f) => f.path === fullPath);
+            const files = this.files.filter((f) => f.path === fullPath);
+            return of({ files, dirs });
         }
     }
+    
+
+    // getContent(data: MyExplorerEntity): Observable<any> {
+    //     // Método que controla si se abre un archivo o una carpeta y qué tipo de carpeta se abre: Local, Falsa, De Scrapping u Online
+    //     if (data.path && data.name.endsWith("/Github Search")) {
+    //         // Archivos/Carpetas online de la API de Github
+    //         if (data.content != ""){
+    //             if (data.content.startsWith('http')) {
+    //                 return this.handleUrlContent(data);
+    //             } else {
+    //                 return this.openFileContentViewDialog(data);
+    //             }
+    //         }
+            
+    //         const repoName = data.path.replace("/Github Search/","");
+    //         const owner = data.owner;
+    //         console.log("In");
+    //         return this.githubService.getRepositoryContents(owner, repoName, data.subname).pipe(
+    //             map((contents: any[]) => {
+    //                 const files = contents.filter((item) => item.type === "file").map((file: any) => ({
+    //                     id: Md5.hashStr(file.sha, true)[0],
+    //                     name: file.name,
+    //                     subname: file.path,
+    //                     path: `/Github Search/${repoName}`,
+    //                     content: file.url,
+    //                     owner: owner
+    //                 }));
+    //                 const dirs = contents.filter((item) => item.type === "dir").map((dir: any) => ({
+    //                     id: dir.sha,
+    //                     name: dir.name,
+    //                     subname: dir.path,
+    //                     path: `/Github Search/${repoName}`,
+    //                     content: '',
+    //                     owner: owner
+    //                 }));
+    //                 return { files, dirs };
+    //             })
+    //         );
+    //     } else if (data.path && data.path.startsWith("/Articles/")) {
+    //         // Artículos a modo de archivos del Scrapping del blog de Github
+    //         return this.openFileContentViewDialog(data);
+    //     }  else if (data.path && data.path.startsWith("/Saved/")) {
+    //         // Archivos locales comentados
+    //         return this.openFileContentViewDialog(data);
+    //     } else if(data.id != 0 && data.name != "Github Search" && data.name != "Articles"){
+    //         // Carpeta falsa "Github Search" para abrir la ventana despegable y buscar
+    //         if (this.files.find((file) => file.id === data.id)){
+    //             if (data.content.startsWith('http')) {
+    //                 return this.handleUrlContent(data);
+    //             } else {
+    //                 return this.openFileContentViewDialog(data);
+    //             }
+    //         }
+    //         const folderPath = data.path || '/';
+    //         const name = data.name ? data.name + '/' : '';
+    //         const fullPath = folderPath + name;
+    //         const dirs = this.directories.filter((f) => f.path === fullPath);
+    //         const files = this.files.filter((f) => f.path === fullPath);
+    //         return of({ files, dirs });
+    //     } else if(data.name == "Articles"){
+    //         // Carpeta falsa "Github Search" para abrir la ventana despegable y buscar
+    //         return this.apiService.getArticles().pipe(
+    //             map((contents: ArticleScrapping[]) => {
+    //                 const files = contents.map((article: ArticleScrapping) => ({
+    //                     id: Md5.hashStr(article.title, true)[0],
+    //                     name: article.title,
+    //                     subname: article.title,
+    //                     path: `/Articles/`,
+    //                     content: article.text,
+    //                     owner: "Github"
+    //                 }));
+    //                 return { files, dirs: [] };
+    //             })
+    //         );
+    //     } else if(data.name == "Saved"){
+    //         return new Observable((observer) => {
+    //             this.apiService.getCommentedFiles().subscribe((response) => {
+    //                 const files = response.files.map((file: any) => ({
+    //                     id: file.id,
+    //                     name: file.name,
+    //                     subname: file.name,
+    //                     path: "/Saved/"+file.path,
+    //                     content: file.content,
+    //                     owner: file.owner
+    //                 }));
+    //                 observer.next({ files, dirs: [] });
+    //                 observer.complete();
+    //             });
+    //         });
+    //     } else {
+    //         const dialogRef = this.dialog.open(SearchDialogComponent);
+    
+    //         return dialogRef.afterClosed().pipe(
+    //             switchMap((result: string) => {
+    //                 if (result) {
+    //                     return this.githubService.searchRepositories(result).pipe(
+    //                         map((result: { items: any[] }) => {
+    //                             const repositories: MyExplorerEntity[] = result.items.map((repo: any) => ({
+    //                                 id: repo.id,
+    //                                 name: repo.name,
+    //                                 subname: '',
+    //                                 path: `/Github Search/${repo.name}`,
+    //                                 content: '', // Add the 'content' property with an empty string value,
+    //                                 owner: repo.owner.login
+    //                             }));
+                                
+    //                             return { files: [], dirs: repositories }; // Assign 'repositories' to 'dirs'
+    //                         })
+    //                     );
+    //                 } else {
+    //                     // If no result is provided, return an observable with empty files and dirs
+    //                     return of({ files: [], dirs: [] });
+    //                 }
+    //             })
+    //         );
+    //     }
+    // }
 
     rename(data: MyExplorerEntity, newName: string) {
         const node = this.directories.find((f) => f.id === data.id);

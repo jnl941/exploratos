@@ -1,0 +1,99 @@
+
+
+  <h1 mat-dialog-title>File Content</h1>
+<div class="dialog-content">
+    <div class="my-div">
+    <!-- <div class="content">
+        <pre> {{ graphDataParsed }}</pre>
+    </div> -->
+    <!-- <div class="content">
+        <pre> {{ data.content }}</pre>
+    </div> -->
+    <div class = "my-div3">
+        <div>
+            <input id="check"  type="checkbox" [checked]="!hideAll['X']" (click)="toggleTrajs('X')">
+            <button mat-button (click)="toggleTrajs('X')">Toggle All Xs</button>
+        </div>
+        <div>
+            <input id="check"  type="checkbox" [checked]="!hideAll['Y']" (click)="toggleTrajs('Y')">
+            <button mat-button (click)="toggleTrajs('Y')">Toggle All Ys</button>
+        </div>
+        <div>
+            <input id="check"  type="checkbox" [checked]="!hideAll['Z']" (click)="toggleTrajs('Z')">
+            <button mat-button (click)="toggleTrajs('Z')">Toggle All Zs</button>
+        </div>
+        <div>
+            <input id="check"  type="checkbox" [checked]="!hideAll['VelocityX']" (click)="toggleTrajs('VelocityX')">
+            <button mat-button (click)="toggleTrajs('VelocityX')">Toggle All VelocityXs</button>
+        </div>
+    </div>
+    <div style="display: block;">
+        <canvas baseChart width="1900" height="660"
+            [type]="'line'"
+            [data]="lineChartData"
+            [options]="lineChartOptions"
+            [legend]="lineChartLegend">
+        </canvas>
+    </div>
+    <div class = "my-div2 scrollmenu">
+            @for (item of legendItems; track item; let i = $index) {
+                <div class="legend-container">
+                <div class="legend-item2">
+                <input id="check"  type="checkbox" [checked]="!hiddenTrajs[i]" (click)="toggleTraj(i)">
+                <button mat-button (click)="toggleTraj(i)">{{ "Trajectory " + (i+1)  }}</button>
+                <!-- <span class="legend-text">{{ "Trajectory " + (i+1)  }}</span> -->
+                </div>    
+                <div class="legend-item">
+                    <input id="check"  type="checkbox" [checked]="!hiddenData[(i*4)]" (click)="toggleData((i*4))">
+                    <span class="box" [ngStyle]="{'background-color': item.x.backgroundColor}"></span>
+                <button mat-button class="my-button" (click)="toggleData((i*4))">{{ item.x.label.split(' ')[2] }}</button>
+                <!-- <span class="legend-text">{{ item.x.label.split(' ')[2] }}</span> -->
+                </div>    
+                <div class="legend-item">
+                    <input id="check"  type="checkbox" [checked]="!hiddenData[(i*4)+1]" (click)="toggleData((i*4)+1)">
+                    <span class="box" [ngStyle]="{'background-color': item.y.backgroundColor}"></span>
+                <button mat-button class="my-button" (click)="toggleData((i*4)+1)">{{ item.y.label.split(' ')[2] }}</button>
+                <!-- <span class="legend-text">{{ item.y.label.split(' ')[2] }}</span> -->
+                </div>    
+                <div class="legend-item">
+                    <input id="check"  type="checkbox" [checked]="!hiddenData[(i*4)+2]" (click)="toggleData((i*4)+2)">
+                    <span class="box" [ngStyle]="{'background-color': item.z.backgroundColor}"></span>
+                <button mat-button class="my-button" (click)="toggleData((i*4)+2)">{{ item.z.label.split(' ')[2] }}</button>
+                    <!-- <span class="legend-text">{{ item.z.label.split(' ')[2] }}</span> -->
+                </div>    
+                <div class="legend-item">
+                    <input id="check"  type="checkbox" [checked]="!hiddenData[(i*4)+3]" (click)="toggleData((i*4)+3)">
+                    <span class="box" [ngStyle]="{'background-color': item.velocityX.backgroundColor}"></span>
+                <button mat-button class="my-button" (click)="toggleData((i*4)+3)">{{ item.velocityX.label.split(' ')[2] }}</button>
+                    <!-- <span class="legend-text">{{ item.velocityX.label.split(' ')[2] }}</span>  -->
+                </div>   
+            </div>
+                }
+        <!-- <div *ngFor="let item of legendItems" class="legend-item">
+            <span class="box" [ngStyle]="{'background-color': item.backgroundColor}"></span>
+            <span class="legend-text">{{ item.label.split(' ')[2] }}</span>
+        </div> -->
+    </div>
+</div>
+    <hr>
+    <div class="commentary">
+        <h2>&nbsp;&nbsp;Commentary List</h2>
+        <!-- Commentary List -->
+        <ul>
+            <li *ngFor="let comment of comments"><b>{{comment.username}}:</b> {{ comment.text }} </li>
+        </ul>
+        <!-- Add a form for users to input their comment -->
+        <form (ngSubmit)="postComment()" #commentForm="ngForm">
+            <mat-form-field appearance="fill">
+                <mat-label>Add your comment</mat-label>
+                <textarea  matInput name="comment" [(ngModel)]="newComment" required></textarea>
+                <mat-error *ngIf="commentForm.controls['comment'].invalid">Comment is required</mat-error>
+            </mat-form-field>
+            <br>
+            <button mat-raised-button color="primary" type="submit" [disabled]="commentForm.invalid">Post</button>
+        </form>        
+    </div>
+</div>
+<mat-dialog-actions align="end">
+    <button mat-button [mat-dialog-close]>Close</button>
+</mat-dialog-actions>
