@@ -14,6 +14,7 @@ import { ApiService } from './api.service';
 import { ArticleScrapping } from './api.service';
 import { Md5 } from 'ts-md5';
 import { GraphViewDialogComponent } from './graph-view-dialog/graph-view-dialog.component';
+import { ExecutorService } from './executor.service';
 
 // Definición de la interfaz de la entidad para el explorador
 export interface MyExplorerEntity extends Data {
@@ -68,12 +69,27 @@ export class ExampleDataService implements IDataService<MyExplorerEntity> {
     files: MyExplorerEntity[] = [];
     directories: MyExplorerEntity[] = [];
 
-    constructor(private fileFetcherService: FileFetcherService, private githubService: GithubService, public dialog: MatDialog, private apiService: ApiService) {
+    constructor(private fileFetcherService: FileFetcherService, 
+        private githubService: GithubService, 
+        public dialog: MatDialog, 
+        private apiService: ApiService,
+        private executorService: ExecutorService) {
             // Obtener archivos y directorios
             this.fileFetcherService.getFilesAndDirectories().subscribe((data: { files: MyExplorerEntity[]; directories: MyExplorerEntity[]; }) => {
             this.files = data.files;
             this.directories = [Saved_Node, ...data.directories];
         });
+    }
+    refresh() {
+        this.fileFetcherService.getFilesAndDirectories().subscribe((data: { files: MyExplorerEntity[]; directories: MyExplorerEntity[]; }) => {
+            this.files = data.files;
+            this.directories = [Saved_Node, ...data.directories];
+        });
+    }
+    runFile(target: MyExplorerEntity): Observable<MyExplorerEntity> {
+        this.executorService.executeAndGet(target.path+target.name).subscribe(result => console.log(result))
+        console.log("running file")
+        return of(target)
     }
 
     // Métodos para gestionar archivos y directorios

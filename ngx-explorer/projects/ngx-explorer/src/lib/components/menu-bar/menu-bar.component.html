@@ -15,6 +15,9 @@
                 <i class="nxe-download" aria-hidden="true"></i> Download
             </button>
         }
+        <button class="nxe-menu-bar-button" [disabled]="!(canDownload$ | async)" (click)="download()">
+            <i class="nxe-upload" aria-hidden="true"></i> Execute
+        </button>
 
         @if (featRename) {
             <button class="nxe-menu-bar-button" [disabled]="!(canRename$ | async)" (click)="rename()">

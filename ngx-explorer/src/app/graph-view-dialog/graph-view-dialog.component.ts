@@ -112,7 +112,6 @@ export class GraphViewDialogComponent {
               velocityX: this.graphService.graphDataParsed[(i*4)+3]
             });
           }
-          console.log(this.graphService.createAnnotationsRegression(this.regressionData))
           this.hiddenData = new Array(this.graphService.graphDataParsed.length)
           this.hiddenData.fill(false)
           this.hiddenTrajs = new Array(this.graphService.graphDataParsed.length/4)
@@ -192,9 +191,9 @@ export class GraphViewDialogComponent {
     const datasetsFiltered = this.lineChartData.datasets.filter(dataset => !dataset.hidden)
     this.groupedDatasets = this.graphService.groupDatasetsByLabel(datasetsFiltered);
     this.regressionData = this.graphService.calculateLinearRegression(this.groupedDatasets);
-    const annotations = this.graphService.createAnnotationsRegression(this.regressionData)
+    const annotations = this.graphService.createAnnotationsRegression(this.regressionData, datasetsFiltered)
     const max = Math.max(...datasetsFiltered.map(datasetFiltered => Math.max(...this.graphService.graphDataParsed.filter(datasetTrue => datasetTrue.label == datasetFiltered.label).map(dataset => Math.max(...dataset.data.map(data => data.y))))), ...Object.keys(annotations).map(annotationKey => annotations[annotationKey].yMax));
-    const min = Math.min(...datasetsFiltered.map(datasetFiltered => Math.min(...this.graphService.graphDataParsed.filter(datasetTrue => datasetTrue.label == datasetFiltered.label).map(dataset => Math.min(...dataset.data.map(data => data.y))))), ...Object.keys(annotations).map(annotationKey => annotations[annotationKey].yMin));
+    const min = Math.min(...datasetsFiltered.map(datasetFiltered => Math.min(...this.graphService.graphDataParsed.filter(datasetTrue => datasetTrue.label == datasetFiltered.label).map(dataset => Math.min(...dataset.data.map(data => data.y))))), ...Object.keys(annotations).map(annotationKey => annotations[annotationKey].yMax));
     
     const max_maxmin_extra = Math.max(Math.abs(max), Math.abs(min))*.02
     this.lineChartOptions = {

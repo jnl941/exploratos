@@ -5,6 +5,7 @@ import { catchError, max, reduce } from 'rxjs/operators';
 import { MyExplorerEntity } from './data.service';
 import { DataPoint } from './graph-view-dialog/graph-view-dialog.component';
 import { SimpleLinearRegression } from 'ml-regression-simple-linear';
+import { ChartDataset, Point } from 'chart.js';
 
 
 export interface GraphDataSet {
@@ -25,48 +26,55 @@ export interface GraphDataSetParsed {
 @Injectable({
   providedIn: 'root'
 })
+
 export class GraphParserService {
   private apiUrl = 'http://localhost:8080'; // Update with your API URL
   private graphData: GraphDataSet[] = [];
   public graphDataParsed: GraphDataSetParsed[] = [];
-  
+  nextRngColour(): string{
+    return '#'+(0x1000000+Math.random()*0xffffff).toString(16).substr(1,6);
+  };  
   getGraphData(graphFile: MyExplorerEntity): Observable<GraphDataSet[]>{
     let httpResponse = this.http.get<[GraphDataSet]>(this.apiUrl + "/api/trajs?filePath="+graphFile.path+graphFile.name)
     httpResponse.subscribe( data => {
       this.graphData = data 
       this.graphDataParsed = []
+    let colour = this.nextRngColour()
     this.graphData.forEach(trajectory => {
       this.graphDataParsed.push({
         label: trajectory.label + " X",
         data: trajectory.x,
         fill: false,
         tension: 0,
-        borderColor: 'black',
-        backgroundColor: '#'+(0x1000000+Math.random()*0xffffff).toString(16).substr(1,6)
+        borderColor: this.blendColors(colour, '#000000', 0.5),
+        backgroundColor: colour
       });
+      colour = this.nextRngColour()
       this.graphDataParsed.push({
         label: trajectory.label + " Y",
         data: trajectory.y,
         fill: false,
         tension: 0,
-        borderColor: 'black',
-        backgroundColor: '#'+(0x1000000+Math.random()*0xffffff).toString(16).substr(1,6)
+        borderColor: this.blendColors(colour, '#000000', 0.5),
+        backgroundColor: colour
       });
+      colour = this.nextRngColour()
       this.graphDataParsed.push({
         label: trajectory.label + " Z",
         data: trajectory.z,
         fill: false,
         tension: 0,
-        borderColor: 'black',
-        backgroundColor: '#'+(0x1000000+Math.random()*0xffffff).toString(16).substr(1,6)
+        borderColor: this.blendColors(colour, '#000000', 0.5),
+        backgroundColor: colour
       });
+      colour = this.nextRngColour()
       this.graphDataParsed.push({
         label: trajectory.label + " VelocityX",
         data: trajectory.velocityX,
         fill: false,
         tension: 0,
-        borderColor: 'black',
-        backgroundColor: '#'+(0x1000000+Math.random()*0xffffff).toString(16).substr(1,6)
+        borderColor: this.blendColors(colour, '#000000', 0.5),
+        backgroundColor: colour
       });
       })
       console.log(this.graphDataParsed)
@@ -146,14 +154,39 @@ export class GraphParserService {
 
     return averages;
   }
+  blendColors(colorA: string, colorB: string, amount: number) {
+      const [rA, gA, bA] = colorA.match(/\w\w/g)?.map((c) => parseInt(c, 16)) || [0, 0, 0];
+      const [rB, gB, bB] = colorB.match(/\w\w/g)?.map((c) => parseInt(c, 16)) || [0, 0, 0];
+      const r = Math.round(rA + (rB - rA) * amount).toString(16).padStart(2, '0');
+      const g = Math.round(gA + (gB - gA) * amount).toString(16).padStart(2, '0');
+      const b = Math.round(bA + (bB - bA) * amount).toString(16).padStart(2, '0');
+      return '#' + r + g + b;
+  }
   
-  createAnnotationsRegression(regressionData: { [key: string]: { slope: number, offset: number, xMax: number, xMin: number } }): { [key: string]: { type: string, xScaleID: string, yScaleID: string, xMin: number, xMax: number, yMin: number, yMax: number, borderColor: string, borderWidth: number, label: {enabled: boolean, content: string, position: string}} } {
+  createAnnotationsRegression(regressionData: { [key: string]: { slope: number, offset: number, xMax: number, xMin: number } }, datasetsFiltered: ChartDataset<"line", (number | Point | null)[]>[]): { [key: string]: { type: string, xScaleID: string, yScaleID: string, xMin: number, xMax: number, yMin: number, yMax: number, borderColor: string, borderWidth: number, label: {enabled: boolean, content: string, position: string}} } {
       const annotations: { [key: string]: { type: string, xScaleID: string, yScaleID: string, xMin: number, xMax: number, yMin: number, yMax: number, borderColor: string, borderWidth: number, label: {enabled: boolean, content: string, position: string}} } = {};
       const colors = ['red', 'purple', 'yellow', 'blue'];
       let colorIndex = 0;
   
       for (const group in regressionData) {
         const regressionGroup = regressionData[group];
+        // const parsedGroup = datasetsFiltered.filter(dataset => dataset.label?.split(' ')[2] == group.split(' ')[1])
+        // const colour = parsedGroup.map(dataset => dataset.backgroundColor).reduce((result, current) => this.blendColors(result as any, current as any, 0.5), '')
+        let colour = ''
+        switch(group.split(' ')[1]){
+          case "X":
+            colour = colors[0];
+            break;
+          case "Y":
+            colour = colors[1];
+            break;
+          case "Z":
+            colour = colors[2];
+            break;
+          case "VelocityX":
+            colour = colors[3];
+            break;
+        }
         annotations[group] = {
           type: 'line',
           xScaleID: 'x',
@@ -163,12 +196,12 @@ export class GraphParserService {
           yMin: (0-regressionGroup.offset)*regressionGroup.slope,
           yMax: (regressionGroup.xMax-regressionGroup.offset)*regressionGroup.slope,
           // value: regressionGroup.map(point => point.offset),
-          borderColor: colors[colorIndex % colors.length],
+          borderColor: colour as string,
           borderWidth: 2,
           label: {
             enabled: true,
             content: `Average ${group}`,
-            position: 'center'
+            position: 'center',
           }
         };
         colorIndex++;

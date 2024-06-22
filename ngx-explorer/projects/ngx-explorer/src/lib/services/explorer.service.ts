@@ -166,6 +166,10 @@ export class ExplorerService {
         });
     }
 
+    public runFile() {
+        const target = this.selectedNodes$$.value[0];
+        this.dataService.runFile(target.data);
+    }
     /**
      * Downloads the currently selected file.
      */

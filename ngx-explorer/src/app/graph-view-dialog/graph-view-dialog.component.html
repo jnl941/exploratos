@@ -44,27 +44,27 @@
                 <!-- <span class="legend-text">{{ "Trajectory " + (i+1)  }}</span> -->
                 </div>    
                 <div class="legend-item">
-                    <input id="check"  type="checkbox" [checked]="!hiddenData[(i*4)]" (click)="toggleData((i*4))">
-                    <span class="box" [ngStyle]="{'background-color': item.x.backgroundColor}"></span>
-                <button mat-button class="my-button" (click)="toggleData((i*4))">{{ item.x.label.split(' ')[2] }}</button>
+                    <input class="mycheck" id="check"  type="checkbox" [checked]="!hiddenData[(i*4)]" (click)="toggleData((i*4))">
+                    <button mat-button class="my-button" (click)="toggleData((i*4))"><span class="box" [ngStyle]="{'background-color': item.x.backgroundColor}"></span>{{ item.x.label.split(' ')[2] }}</button>
+                
                 <!-- <span class="legend-text">{{ item.x.label.split(' ')[2] }}</span> -->
                 </div>    
                 <div class="legend-item">
-                    <input id="check"  type="checkbox" [checked]="!hiddenData[(i*4)+1]" (click)="toggleData((i*4)+1)">
-                    <span class="box" [ngStyle]="{'background-color': item.y.backgroundColor}"></span>
-                <button mat-button class="my-button" (click)="toggleData((i*4)+1)">{{ item.y.label.split(' ')[2] }}</button>
+                    <input class="mycheck" id="check"  type="checkbox" [checked]="!hiddenData[(i*4)+1]" (click)="toggleData((i*4)+1)">
+                    
+                <button mat-button class="my-button" (click)="toggleData((i*4)+1)"><span class="box" [ngStyle]="{'background-color': item.y.backgroundColor}"></span>{{ item.y.label.split(' ')[2] }}</button>
                 <!-- <span class="legend-text">{{ item.y.label.split(' ')[2] }}</span> -->
                 </div>    
                 <div class="legend-item">
-                    <input id="check"  type="checkbox" [checked]="!hiddenData[(i*4)+2]" (click)="toggleData((i*4)+2)">
-                    <span class="box" [ngStyle]="{'background-color': item.z.backgroundColor}"></span>
-                <button mat-button class="my-button" (click)="toggleData((i*4)+2)">{{ item.z.label.split(' ')[2] }}</button>
+                    <input class="mycheck" id="check"  type="checkbox" [checked]="!hiddenData[(i*4)+2]" (click)="toggleData((i*4)+2)">
+                    
+                <button mat-button class="my-button" (click)="toggleData((i*4)+2)"><span class="box" [ngStyle]="{'background-color': item.z.backgroundColor}"></span>{{ item.z.label.split(' ')[2] }}</button>
                     <!-- <span class="legend-text">{{ item.z.label.split(' ')[2] }}</span> -->
                 </div>    
                 <div class="legend-item">
-                    <input id="check"  type="checkbox" [checked]="!hiddenData[(i*4)+3]" (click)="toggleData((i*4)+3)">
-                    <span class="box" [ngStyle]="{'background-color': item.velocityX.backgroundColor}"></span>
-                <button mat-button class="my-button" (click)="toggleData((i*4)+3)">{{ item.velocityX.label.split(' ')[2] }}</button>
+                    <input class="mycheck" id="check"  type="checkbox" [checked]="!hiddenData[(i*4)+3]" (click)="toggleData((i*4)+3)">
+                    
+                <button mat-button class="my-button" (click)="toggleData((i*4)+3)"><span class="box" [ngStyle]="{'background-color': item.velocityX.backgroundColor}"></span>{{ item.velocityX.label.split(' ')[2] }}</button>
                     <!-- <span class="legend-text">{{ item.velocityX.label.split(' ')[2] }}</span>  -->
                 </div>   
             </div>
