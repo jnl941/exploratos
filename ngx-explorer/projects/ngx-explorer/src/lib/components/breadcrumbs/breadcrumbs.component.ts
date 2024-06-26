@@ -20,9 +20,8 @@ interface Breadcrumb {
     imports: [AsyncPipe],
 })
 export class BreadcrumbsComponent {
-    private explorerService = inject(ExplorerService);
     private config = inject(CONFIG);
-
+    private explorerService = inject(ExplorerService);
     public breadcrumbs$ = this.explorerService.openedDir$.pipe(
         map((n) => {
             if (!n) {

@@ -12,7 +12,7 @@ import { map } from 'rxjs';
 @Component({
     selector: 'nxe-content',
     standalone: true,
-    imports: [AsyncPipe, MenuBarComponent, TreeComponent, BreadcrumbsComponent, IconsComponent, ListComponent, NgComponentOutlet],
+    imports: [AsyncPipe, MenuBarComponent, BreadcrumbsComponent, IconsComponent, ListComponent, NgComponentOutlet],
     templateUrl: './content.component.html',
     styleUrl: './content.component.scss',
 })

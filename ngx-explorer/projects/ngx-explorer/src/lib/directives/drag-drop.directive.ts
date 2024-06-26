@@ -6,26 +6,17 @@ import { ExplorerService } from '../services/explorer.service';
     standalone: true,
 })
 export class DragDropDirective {
+    @Output() private dragDrop = new EventEmitter<any>();
+    @Output() private dragEnter = new EventEmitter<any>();
+    @Output() private dragging = new EventEmitter<boolean>();
+    @Output() private dragLeave = new EventEmitter<any>();
+    @Output() private dragOver = new EventEmitter<any>();
     private explorerService = inject(ExplorerService);
-    @Output() dragEnter = new EventEmitter<any>();
-    @Output() dragOver = new EventEmitter<any>();
-    @Output() dragLeave = new EventEmitter<any>();
-    @Output() dragDrop = new EventEmitter<any>();
-    @Output() dragging = new EventEmitter<boolean>();
-
     @HostListener('dragenter', ['$event'])
     public onDragEnter(event: DragEvent) {
         event.preventDefault();
         event.stopPropagation();
         this.dragEnter.emit(event);
-        this.dragging.emit(true);
-    }
-
-    @HostListener('dragover', ['$event'])
-    public onDragOver(event: DragEvent) {
-        event.preventDefault();
-        event.stopPropagation();
-        this.dragOver.emit(event);
         this.dragging.emit(true);
     }
 
@@ -35,6 +26,14 @@ export class DragDropDirective {
         event.stopPropagation();
         this.dragLeave.emit(event);
         this.dragging.emit(false);
+    }
+
+    @HostListener('dragover', ['$event'])
+    public onDragOver(event: DragEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.dragOver.emit(event);
+        this.dragging.emit(true);
     }
 
     @HostListener('drop', ['$event'])

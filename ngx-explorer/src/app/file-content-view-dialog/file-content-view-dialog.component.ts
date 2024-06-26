@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogActions, MatDialogTitle } from '@angular/mate
 import { MatButtonModule } from '@angular/material/button'; 
 import { MatDialogClose, MatDialogContent } from '@angular/material/dialog';
 import { ApiService } from '../api.service';
-import { MyExplorerEntity } from '../data.service';
+import { MyData } from '../data.service';
 import { AuthService } from '../auth.service';
 import {FormsModule} from '@angular/forms'
 import { MatError, MatFormField, MatFormFieldControl, MatFormFieldModule, MatLabel } from '@angular/material/form-field';
@@ -31,7 +31,7 @@ export class FileContentViewDialogComponent {
   userId: number = -1; // User's ID
   comments: Comment[] = [];
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: MyExplorerEntity, private apiService: ApiService, private authService: AuthService) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: MyData, private apiService: ApiService, private authService: AuthService) {
      this.apiService.getUserId().subscribe(user => this.userId = user.id); // Get the user's ID from the authentication service
   }
 

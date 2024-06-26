@@ -13,7 +13,7 @@ export class ViewSwitcherComponent {
     private explorerService = inject(ExplorerService);
     protected views = inject(VIEWS);
 
-    setView(view: string) {
+    private setView(view: string) {
         this.explorerService.currentView$.next(view);
     }
 }

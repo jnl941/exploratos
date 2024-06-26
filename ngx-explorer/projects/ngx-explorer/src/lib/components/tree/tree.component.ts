@@ -15,23 +15,23 @@ import { AsyncPipe, JsonPipe, NgClass, NgTemplateOutlet } from '@angular/common'
 })
 export class TreeComponent {
     private explorerService = inject(ExplorerService);
-    protected treeNodes: INode[] = [];
-    protected tree$ = this.explorerService.root$.pipe(map((r) => r.children));
     protected selectedId$ = this.explorerService.openedDir$.pipe(map((p) => p?.id));
+    protected tree$ = this.explorerService.root$.pipe(map((r) => r.children));
+    protected treeNodes: INode[] = [];
 
-    open(node: INode) {
-        this.explorerService.openNode(node.id);
+    private collapse(event: Event, node: INode) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.explorerService.collapse(node.id);
     }
 
-    expand(event: Event, node: INode) {
+    private expand(event: Event, node: INode) {
         event.preventDefault();
         event.stopPropagation();
         this.explorerService.expand(node.id);
     }
 
-    collapse(event: Event, node: INode) {
-        event.preventDefault();
-        event.stopPropagation();
-        this.explorerService.collapse(node.id);
+    private open(node: INode) {
+        this.explorerService.openNode(node.id);
     }
 }

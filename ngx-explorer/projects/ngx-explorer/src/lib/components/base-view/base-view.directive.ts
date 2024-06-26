@@ -6,15 +6,13 @@ import { ExplorerService } from '../../services/explorer.service';
 
 @Directive()
 export class BaseView implements OnDestroy {
-    protected selection = new Set<number>();
-    protected items: INode[] = [];
-    protected dragging = false;
-    protected subs = new Subscription();
-    protected shiftSelectionStartId: number | undefined;
-
-    protected explorerService: ExplorerService = inject(ExplorerService);
     protected config: NgeExplorerConfig = inject(CONFIG);
-
+    protected dragging = false;
+    protected explorerService: ExplorerService = inject(ExplorerService);
+    protected items: INode[] = [];
+    protected selection = new Set<number>();
+    protected shiftSelectionStartId: number | undefined;
+    protected subs = new Subscription();
     constructor() {
         this.subs.add(
             this.explorerService.openedDir$.subscribe((nodes) => {
@@ -32,7 +30,22 @@ export class BaseView implements OnDestroy {
         );
     }
 
-    select(event: MouseEvent, item: INode) {
+    private emptySpaceClick(): void {
+        this.explorerService.select([]);
+    }
+
+    private isSelected(item: INode) {
+        return this.selection.has(item.id);
+    }
+
+    private open(event: MouseEvent, item: INode) {
+        const metaKeyPressed = event.metaKey || event.ctrlKey || event.shiftKey;
+        if (!metaKeyPressed) {
+            this.explorerService.openNode(item.id);
+        }
+    }
+
+    private select(event: MouseEvent, item: INode) {
         const shiftKeyPressed = event.shiftKey;
         const metaKeyPressed = event.metaKey || event.ctrlKey;
 
@@ -68,21 +81,6 @@ export class BaseView implements OnDestroy {
 
         const nodes = this.items.filter((i) => this.selection.has(i.id));
         this.explorerService.select(nodes);
-    }
-
-    open(event: MouseEvent, item: INode) {
-        const metaKeyPressed = event.metaKey || event.ctrlKey || event.shiftKey;
-        if (!metaKeyPressed) {
-            this.explorerService.openNode(item.id);
-        }
-    }
-
-    isSelected(item: INode) {
-        return this.selection.has(item.id);
-    }
-
-    emptySpaceClick(): void {
-        this.explorerService.select([]);
     }
 
     ngOnDestroy() {

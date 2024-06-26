@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, max, reduce } from 'rxjs/operators';
-import { MyExplorerEntity } from './data.service';
-import { DataPoint } from './graph-view-dialog/graph-view-dialog.component';
+import { MyData } from './data.service';
+import { DataPoint } from './interfaces/data-point';
 import { SimpleLinearRegression } from 'ml-regression-simple-linear';
 import { ChartDataset, Point } from 'chart.js';
 
@@ -34,7 +34,7 @@ export class GraphParserService {
   nextRngColour(): string{
     return '#'+(0x1000000+Math.random()*0xffffff).toString(16).substr(1,6);
   };  
-  getGraphData(graphFile: MyExplorerEntity): Observable<GraphDataSet[]>{
+  getGraphData(graphFile: MyData): Observable<GraphDataSet[]>{
     let httpResponse = this.http.get<[GraphDataSet]>(this.apiUrl + "/api/trajs?filePath="+graphFile.path+graphFile.name)
     httpResponse.subscribe( data => {
       this.graphData = data 

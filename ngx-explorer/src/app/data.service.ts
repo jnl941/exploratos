@@ -5,8 +5,6 @@ import { MatFormFieldModule, MatFormFieldControl, MatFormField } from '@angular/
 import { inject, OnInit } from '@angular/core';
 
 import { MatDialog } from '@angular/material/dialog';
-import { GithubService } from './github.service';
-import { SearchDialogComponent } from './search-dialog/search-dialog.component';
 import { Injectable } from '@angular/core';
 import { switchMap } from 'rxjs';
 import { FileContentViewDialogComponent } from './file-content-view-dialog/file-content-view-dialog.component';
@@ -14,10 +12,9 @@ import { ApiService } from './api.service';
 import { ArticleScrapping } from './api.service';
 import { Md5 } from 'ts-md5';
 import { GraphViewDialogComponent } from './graph-view-dialog/graph-view-dialog.component';
-import { ExecutorService } from './executor.service';
 
 // Definición de la interfaz de la entidad para el explorador
-export interface MyExplorerEntity extends Data {
+export interface MyData extends Data {
     id: number;
     name: string;
     subname: string;
@@ -59,43 +56,39 @@ const Saved_Node = {
     id: 0,
     name: "Saved",
     path: "/"
-} as MyExplorerEntity
+} as MyData
 
 @Injectable()
-export class ExampleDataService implements IDataService<MyExplorerEntity> {
+export class MyDataService implements IDataService<MyData> {
     private id = 0;
     private folderId = 1000;
 
-    files: MyExplorerEntity[] = [];
-    directories: MyExplorerEntity[] = [];
+    files: MyData[] = [];
+    directories: MyData[] = [];
 
     constructor(private fileFetcherService: FileFetcherService, 
-        private githubService: GithubService, 
         public dialog: MatDialog, 
-        private apiService: ApiService,
-        private executorService: ExecutorService) {
+        private apiService: ApiService) {
             // Obtener archivos y directorios
-            this.fileFetcherService.getFilesAndDirectories().subscribe((data: { files: MyExplorerEntity[]; directories: MyExplorerEntity[]; }) => {
+            this.fileFetcherService.getFilesAndDirectories().subscribe((data: { files: MyData[]; directories: MyData[]; }) => {
             this.files = data.files;
             this.directories = [Saved_Node, ...data.directories];
         });
     }
     refresh() {
-        this.fileFetcherService.getFilesAndDirectories().subscribe((data: { files: MyExplorerEntity[]; directories: MyExplorerEntity[]; }) => {
+        this.fileFetcherService.getFilesAndDirectories().subscribe((data: { files: MyData[]; directories: MyData[]; }) => {
             this.files = data.files;
             this.directories = [Saved_Node, ...data.directories];
             return of(this.files, this.directories);
         });
     }
-    runFile(target: MyExplorerEntity): Observable<MyExplorerEntity> {
-        this.executorService.executeAndGet(target.path+target.name).subscribe(result => console.log(result))
-        console.log("running file")
+    runFile(target: MyData): Observable<MyData> {
         return of(target)
     }
 
     // Métodos para gestionar archivos y directorios
 
-    downloadFile(data: MyExplorerEntity): Observable<any> {
+    downloadFile(data: MyData): Observable<any> {
         // Descargar un archivo (solo funciona en local)
         const file = this.files.find((f) => f.id === data.id);
 
@@ -116,7 +109,7 @@ export class ExampleDataService implements IDataService<MyExplorerEntity> {
     }
 
     
-    uploadFiles(parent: MyExplorerEntity, files: FileList): Observable<any> {
+    uploadFiles(parent: MyData, files: FileList): Observable<any> {
         // Subir un archivo (NO FUNCIONA)
         const results = [];
 
@@ -142,7 +135,7 @@ export class ExampleDataService implements IDataService<MyExplorerEntity> {
         return forkJoin(results);
     }
 
-    delete(datas: MyExplorerEntity[]): Observable<any> {
+    delete(datas: MyData[]): Observable<any> {
         // Borrar un archivo (NO FUNCIONA)
         const results = datas.map((data) => {
             const path = data.path + '/';
@@ -154,7 +147,7 @@ export class ExampleDataService implements IDataService<MyExplorerEntity> {
         return forkJoin(results);
     }
 
-    createDir(parent: MyExplorerEntity, name: string): Observable<any> {
+    createDir(parent: MyData, name: string): Observable<any> {
         // Crear una carpeta (NO FUNCIONA)
         const path = (parent.path ? parent.path + '/' : '') + name.replace(/[\W_]+/g, ' ');
         const id = ++this.folderId;
@@ -190,46 +183,17 @@ export class ExampleDataService implements IDataService<MyExplorerEntity> {
             map(() => ({ files: this.files, dirs: this.directories.filter(data => data.path == parent.path) }))
         );
     }
-      
-    private handleUrlContent(parent: any): Observable<any> {
-        // Para archivos: Abrir la ventana para ver el contenido, el contenido se coge con un GET automáticamente de la URL que tiene el archivo
-        return new Observable<any>((observer) => {
-            this.githubService.getFileContentByUrl(parent.content).subscribe((response: any) => {
-                const content = atob(response.content);
-                const newParent = parent
-                newParent.content = content
-                const dialogRef = this.dialog.open(FileContentViewDialogComponent, {
-                    width: '80%',
-                    height: '90%',
-                    data: newParent 
-                });
-    
-        throw new Error("IGNORAR: Cortar proceso de getContents() del módulo base");
-        dialogRef.afterClosed().subscribe(() => {
-                    observer.next({ files: this.files.filter(data => data.path == parent.path), dirs: this.directories.filter(data => data.path == parent.path) });
-                    observer.complete();
-                });
-            });
-        });
-    }
+
     
 
-    getContent(data: MyExplorerEntity): Observable<any> {
+    getContent(data: MyData): Observable<any> {
         // Método que controla si se abre un archivo o una carpeta y qué tipo de carpeta se abre: Local, Falsa, De Scrapping u Online
         if (data.path && data.name.startsWith("pos-tracer")) {
             // Archivos/Carpetas online de la API de Github
-            if (data.content.startsWith('http')) {
-                return this.handleUrlContent(data);
-            } else {
                 return this.openGraphViewDialog(data);
-            }
         } else if (data.path && data.path.startsWith("/Saved/")) {
             // Archivos locales comentados
-            if (data.content.startsWith('http')) {
-                return this.handleUrlContent(data);
-            } else {
                 return this.openFileContentViewDialog(data);
-            }
         } else if(data.name == "Saved"){
             return new Observable((observer) => {
                 this.apiService.getCommentedFiles().subscribe((response) => {
@@ -247,11 +211,7 @@ export class ExampleDataService implements IDataService<MyExplorerEntity> {
             });
         } else {
             if (this.files.find((file) => file.id === data.id)){
-                if (data.content.startsWith('http')) {
-                    return this.handleUrlContent(data);
-                } else {
                     return this.openFileContentViewDialog(data);
-                }
             }
             const folderPath = data.path || '/';
             const name = data.name ? data.name + '/' : '';
@@ -379,7 +339,7 @@ export class ExampleDataService implements IDataService<MyExplorerEntity> {
     //     }
     // }
 
-    rename(data: MyExplorerEntity, newName: string) {
+    rename(data: MyData, newName: string) {
         const node = this.directories.find((f) => f.id === data.id);
         if (node) {
             node.name = newName;
@@ -393,11 +353,11 @@ export class ExampleDataService implements IDataService<MyExplorerEntity> {
         return of({}) as Observable<any>;
     }
 
-    getName(data: MyExplorerEntity) {
+    getName(data: MyData) {
         return data.name;
     }
 
-    openTree(data: MyExplorerEntity): Observable<Array<DataNode<MyExplorerEntity>>> {
+    openTree(data: MyData): Observable<Array<DataNode<MyData>>> {
         const fullPath = data.path + data.name + '/';
         const paths = fullPath.split('/').slice(0, -1);
         const parentPaths = [] as string[];
@@ -416,7 +376,7 @@ export class ExampleDataService implements IDataService<MyExplorerEntity> {
 
         return forkJoin(observables).pipe(
             map((dataNodesLevels) => {
-                const trees = [] as Array<DataNode<MyExplorerEntity>>;
+                const trees = [] as Array<DataNode<MyData>>;
                 let parent = trees;
                 parentPaths.shift(); // remove the first path, it's the root
 

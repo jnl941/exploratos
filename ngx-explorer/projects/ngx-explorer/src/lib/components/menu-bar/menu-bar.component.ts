@@ -15,33 +15,52 @@ import { AsyncPipe } from '@angular/common';
     imports: [ViewSwitcherComponent, AsyncPipe],
 })
 export class MenuBarComponent {
-    @ViewChild('uploader', { static: true }) uploader!: ElementRef;
-
-    protected explorerService: ExplorerService = inject(ExplorerService);
+    @ViewChild('uploader', { static: true }) private uploader!: ElementRef;
+    protected canDelete$ = this.explorerService.selection$.pipe(map((n) => n.length > 0));
+    protected canDownload$ = this.explorerService.selection$.pipe(map((n) => n.length === 1 && n[0].isLeaf));
+    protected canRename$ = this.explorerService.selection$.pipe(map((n) => n.length === 1));
     protected config: NgeExplorerConfig = inject(CONFIG);
-
+    protected explorerService: ExplorerService = inject(ExplorerService);
+    protected featCreateDir = this.config.features?.createDir;
     protected featDelete = this.config.features?.delete;
-    protected featUpload = this.config.features?.upload;
     protected featDownload = this.config.features?.download;
     protected featRename = this.config.features?.rename;
-    protected featCreateDir = this.config.features?.createDir;
-
-    protected canDownload$ = this.explorerService.selection$.pipe(map((n) => n.length === 1 && n[0].isLeaf));
-    protected canDelete$ = this.explorerService.selection$.pipe(map((n) => n.length > 0));
-    protected canRename$ = this.explorerService.selection$.pipe(map((n) => n.length === 1));
-
-    createDir() {
+    protected featUpload = this.config.features?.upload;
+    private createDir() {
         const name = prompt('Enter new name');
         if (name) {
             this.explorerService.createDir(name);
         }
     }
 
-    refresh() {
+    private download() {
+        this.explorerService.download();
+    }
+
+    private handleFiles(event: Event) {
+        const files = (event.target as HTMLInputElement).files;
+        if (!files || files.length === 0) {
+            return;
+        }
+        this.explorerService.upload(files);
+        this.uploader.nativeElement.value = '';
+    }
+
+    private openUploader() {
+        this.uploader.nativeElement.click();
+    }
+
+    private refresh() {
         this.explorerService.refresh();
     }
 
-    rename() {
+    private remove() {
+        if (confirm('Are you sure you want to delete the selected files?')) {
+            this.explorerService.remove();
+        }
+    }
+
+    private rename() {
         this.explorerService.selection$
             .pipe(
                 take(1),
@@ -54,28 +73,5 @@ export class MenuBarComponent {
                     this.explorerService.rename(newName);
                 }
             });
-    }
-
-    remove() {
-        if (confirm('Are you sure you want to delete the selected files?')) {
-            this.explorerService.remove();
-        }
-    }
-
-    openUploader() {
-        this.uploader.nativeElement.click();
-    }
-
-    handleFiles(event: Event) {
-        const files = (event.target as HTMLInputElement).files;
-        if (!files || files.length === 0) {
-            return;
-        }
-        this.explorerService.upload(files);
-        this.uploader.nativeElement.value = '';
-    }
-
-    download() {
-        this.explorerService.download();
     }
 }

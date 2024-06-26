@@ -9,71 +9,7 @@
     <!-- <div class="content">
         <pre> {{ data.content }}</pre>
     </div> -->
-    <div class = "my-div3">
-        <div>
-            <input id="check"  type="checkbox" [checked]="!hideAll['X']" (click)="toggleTrajs('X')">
-            <button mat-button (click)="toggleTrajs('X')">Toggle All Xs</button>
-        </div>
-        <div>
-            <input id="check"  type="checkbox" [checked]="!hideAll['Y']" (click)="toggleTrajs('Y')">
-            <button mat-button (click)="toggleTrajs('Y')">Toggle All Ys</button>
-        </div>
-        <div>
-            <input id="check"  type="checkbox" [checked]="!hideAll['Z']" (click)="toggleTrajs('Z')">
-            <button mat-button (click)="toggleTrajs('Z')">Toggle All Zs</button>
-        </div>
-        <div>
-            <input id="check"  type="checkbox" [checked]="!hideAll['VelocityX']" (click)="toggleTrajs('VelocityX')">
-            <button mat-button (click)="toggleTrajs('VelocityX')">Toggle All VelocityXs</button>
-        </div>
-    </div>
-    <div style="display: block;">
-        <canvas baseChart width="1900" height="660"
-            [type]="'line'"
-            [data]="lineChartData"
-            [options]="lineChartOptions"
-            [legend]="lineChartLegend">
-        </canvas>
-    </div>
-    <div class = "my-div2 scrollmenu">
-            @for (item of legendItems; track item; let i = $index) {
-                <div class="legend-container">
-                <div class="legend-item2">
-                <input id="check"  type="checkbox" [checked]="!hiddenTrajs[i]" (click)="toggleTraj(i)">
-                <button mat-button (click)="toggleTraj(i)">{{ "Trajectory " + (i+1)  }}</button>
-                <!-- <span class="legend-text">{{ "Trajectory " + (i+1)  }}</span> -->
-                </div>    
-                <div class="legend-item">
-                    <input class="mycheck" id="check"  type="checkbox" [checked]="!hiddenData[(i*4)]" (click)="toggleData((i*4))">
-                    <button mat-button class="my-button" (click)="toggleData((i*4))"><span class="box" [ngStyle]="{'background-color': item.x.backgroundColor}"></span>{{ item.x.label.split(' ')[2] }}</button>
-                
-                <!-- <span class="legend-text">{{ item.x.label.split(' ')[2] }}</span> -->
-                </div>    
-                <div class="legend-item">
-                    <input class="mycheck" id="check"  type="checkbox" [checked]="!hiddenData[(i*4)+1]" (click)="toggleData((i*4)+1)">
-                    
-                <button mat-button class="my-button" (click)="toggleData((i*4)+1)"><span class="box" [ngStyle]="{'background-color': item.y.backgroundColor}"></span>{{ item.y.label.split(' ')[2] }}</button>
-                <!-- <span class="legend-text">{{ item.y.label.split(' ')[2] }}</span> -->
-                </div>    
-                <div class="legend-item">
-                    <input class="mycheck" id="check"  type="checkbox" [checked]="!hiddenData[(i*4)+2]" (click)="toggleData((i*4)+2)">
-                    
-                <button mat-button class="my-button" (click)="toggleData((i*4)+2)"><span class="box" [ngStyle]="{'background-color': item.z.backgroundColor}"></span>{{ item.z.label.split(' ')[2] }}</button>
-                    <!-- <span class="legend-text">{{ item.z.label.split(' ')[2] }}</span> -->
-                </div>    
-                <div class="legend-item">
-                    <input class="mycheck" id="check"  type="checkbox" [checked]="!hiddenData[(i*4)+3]" (click)="toggleData((i*4)+3)">
-                    
-                <button mat-button class="my-button" (click)="toggleData((i*4)+3)"><span class="box" [ngStyle]="{'background-color': item.velocityX.backgroundColor}"></span>{{ item.velocityX.label.split(' ')[2] }}</button>
-                    <!-- <span class="legend-text">{{ item.velocityX.label.split(' ')[2] }}</span>  -->
-                </div>   
-            </div>
-                }
-        <!-- <div *ngFor="let item of legendItems" class="legend-item">
-            <span class="box" [ngStyle]="{'background-color': item.backgroundColor}"></span>
-            <span class="legend-text">{{ item.label.split(' ')[2] }}</span>
-        </div> -->
-    </div>
+    <app-graph-visualizer [data]="data"></app-graph-visualizer>
 </div>
     <hr>
     <div class="commentary">

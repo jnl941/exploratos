@@ -4,7 +4,6 @@ import { ContentComponent, ExplorerComponent, ExplorerService, TreeComponent } f
 import { map } from 'rxjs';
 import { HttpClientModule} from '@angular/common/http';
 import { FileFetcherService } from './file-fetcher.service';
-import { FileDisplayComponent } from './file-display/file-display.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogModule } from '@angular/material/dialog';
 import { MatFormField } from '@angular/material/form-field';
@@ -21,7 +20,7 @@ import { RegisterDialogComponent } from './register-dialog/register-dialog.compo
 // TODO: `HttpClientModule` should not be imported into a component directly.
 // Please refactor the code to add `provideHttpClient()` call to the provider list in the
 // application bootstrap logic and remove the `HttpClientModule` import from this component.
-HttpClientModule, FileDisplayComponent, MatButtonModule, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogModule, MatFormField],
+HttpClientModule, MatButtonModule, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogModule, MatFormField],
     providers: [FileFetcherService]
 })
 export class AppComponent implements OnInit{

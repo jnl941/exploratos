@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { MyExplorerEntity } from './data.service';
+import { MyData } from './data.service';
 
 interface FilesAndDirectories {
-  files: MyExplorerEntity[];
-  directories: MyExplorerEntity[];
+  files: MyData[];
+  directories: MyData[];
 }
 
 @Injectable({
